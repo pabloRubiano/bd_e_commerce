@@ -274,3 +274,7 @@ Automatización	Ahorra tiempo de generación manual de reportes.
 Escalabilidad	Modelo preparado para incorporar campañas, devoluciones, etc.
 Toma de Decisiones	Se basa en datos reales, no en percepción o intuición.
 Potencial Predictivo	Base para construir modelos de forecasting o machine learning.
+
+
+<img width="710" height="467" alt="image" src="https://github.com/user-attachments/assets/c6f888e5-f2db-4437-a9bf-c273a2148c6c" />
+
