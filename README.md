@@ -88,7 +88,7 @@ Los canales de venta deben poder analizarse por separado para medir rentabilidad
 
 
 
-#📊 Caso Inteligencia de Negocios – Solución de Inteligencia de Negocios para ComercioFácil S.A.
+# 📊 Caso Inteligencia de Negocios – Solución de Inteligencia de Negocios para ComercioFácil S.A.
 🧭 Contexto del Negocio
 ComercioFácil S.A. ha implementado un sistema transaccional que registra todas las operaciones de compra de sus clientes, incluyendo productos, pagos, envíos y stock. Sin embargo, la dirección comercial necesita ahora una solución de inteligencia de negocios que transforme esos datos operativos en decisiones estratégicas.
 
