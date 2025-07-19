@@ -1,192 +1,276 @@
 # bd_e_commerce: caso BD transaccional
 
-🛒 Caso Propuesto – Sistema de Gestión de Pedidos para E-commerce
+📦 Caso  Base de Datos Transaccional
+Proyecto: Sistema de Gestión de Pedidos para E-commerce – ComercioFácil S.A.
+
 🧭 Contexto del Negocio
-ComercioFácil S.A. es una empresa argentina de e-commerce especializada en la venta de productos de tecnología, hogar y electrónica de consumo. Opera a través de canales propios (sitio web, WhatsApp) y plataformas externas como Mercado Libre.
+ComercioFácil S.A. es una empresa de e-commerce con sede en Argentina, especializada en la venta de productos tecnológicos, electrodomésticos y artículos para el hogar. Sus operaciones se realizan tanto en canales propios (sitio web institucional y WhatsApp Business) como en plataformas externas como Mercado Libre, Facebook Marketplace y otras.
 
-Actualmente, sus operaciones comerciales están en crecimiento y requieren una base de datos relacional transaccional para registrar y gestionar la información crítica de su negocio: ventas, clientes, productos, pagos y envíos.
+En los últimos años, el negocio ha experimentado un crecimiento sostenido en volumen de ventas, diversidad de productos y alcance geográfico. Esta expansión trajo consigo una complejidad operativa creciente: mayor necesidad de trazabilidad de pedidos, control de stock en tiempo real, análisis de canales de venta, y automatización del seguimiento logístico.
 
-La empresa busca mayor control sobre su operación diaria, trazabilidad de pedidos, seguimiento de entregas y organización del inventario. Esta base también servirá como base futura para la generación de reportes comerciales, métricas de rendimiento y análisis de clientes.
+Frente a este escenario, la empresa identificó como necesidad crítica el diseño e implementación de una base de datos transaccional robusta y escalable, que permita registrar y gestionar las operaciones comerciales de punta a punta de forma estructurada.
 
 🎯 Objetivo del Sistema
-Diseñar un modelo de base de datos relacional transaccional que permita:
+El objetivo principal es diseñar una base de datos relacional transaccional que cumpla los siguientes propósitos:
 
-Registrar órdenes de compra realizadas por los clientes.
+Registrar las órdenes de compra realizadas por clientes.
 
-Asociar múltiples productos a cada orden (modelo N:N).
+Asociar múltiples productos a cada orden (modelo relacional N:N).
 
-Controlar la información de productos, stock y precios actualizados.
+Gestionar información de productos, incluyendo precio actual y stock disponible.
 
-Registrar la forma de pago y canal de venta para cada operación.
+Registrar los métodos de pago utilizados por los clientes.
 
-Gestionar la información básica del envío asociado a cada orden.
+Identificar el canal de venta en el que se concretó cada transacción.
 
-Brindar la posibilidad de generar métricas clave a partir de los datos.
+Controlar y actualizar el estado de los envíos asociados a cada pedido.
 
-🧩 Alcance del Modelo
-La base de datos debe cubrir los siguientes procesos:
+Mantener coherencia entre stock y ventas confirmadas.
 
-Registro de nuevos clientes.
+Servir como base estructural para el desarrollo futuro de soluciones de inteligencia de negocios (BI).
 
-Carga del catálogo de productos con precio y stock.
+📦 Procesos Cubiertos por el Modelo
+Registro y gestión de clientes: alta de nuevos usuarios con datos personales, zona y canal de contacto.
 
-Registro de una orden de compra con uno o varios productos.
+Gestión del catálogo de productos: carga de productos, precios, stock actual y atributos básicos.
 
-Registro del pago y canal de venta asociado a la orden.
+Operación de órdenes de compra: creación de pedidos con múltiples productos, método de pago y canal de origen.
 
-Registro de los datos básicos del envío (estado, fecha estimada).
+Gestión logística básica: seguimiento del estado de envío por pedido (pendiente, en camino, entregado, cancelado).
 
-Control básico de stock por producto (disminuye al confirmar venta).
+Control transaccional de stock: ajuste automático de unidades disponibles al confirmar una orden.
 
-🧱 Entidades Principales
+🧱 Entidades del Modelo
 Entidad	Descripción
-Cliente	Información de cada cliente (nombre, contacto, dirección).
-Producto	Catálogo activo de productos (nombre, precio actual, stock).
-Orden	Encabezado de cada compra realizada por un cliente.
-DetalleOrden	Detalle por producto de cada orden (cantidad, precio aplicado).
-MetodoPago	Medios de pago disponibles (tarjeta, efectivo, transferencia).
-CanalVenta	Canal por el que se concretó la compra (web, WhatsApp, marketplace).
-Envio	Información del envío (estado, fecha estimada, transportista).
+Cliente	Información básica de clientes: nombre, zona, contacto y fecha de alta.
+Producto	Catálogo activo: nombre, descripción, categoría, precio unitario y stock.
+Orden	Encabezado de cada compra: fecha, cliente, método de pago, canal de venta.
+DetalleOrden	Asociación producto–orden: cantidad, precio aplicado, total línea.
+MetodoPago	Tipos de pago: tarjeta, efectivo, transferencia, etc.
+CanalVenta	Canales de origen del pedido: Web, WhatsApp, Mercado Libre, etc.
+Envio	Estado del pedido: transportista, estado actual, fecha estimada entrega.
 
-🔄 Relaciones
-Un cliente puede generar muchas órdenes.
+🔁 Relaciones del Modelo
+Un cliente puede realizar múltiples órdenes.
 
-Una orden contiene uno o más productos (relación N:N).
+Una orden puede tener múltiples productos (N:N resuelto con DetalleOrden).
 
 Cada producto puede aparecer en muchas órdenes.
 
-Cada orden se paga con un solo método de pago.
+Cada orden se paga con un solo método de pago y se origina en un canal de venta.
 
-Cada orden se canaliza por un canal de venta.
+Cada orden tiene un único envío asociado.
 
-Cada orden tiene un solo registro de envío.
+📌 Reglas de Negocio
+El stock de un producto se actualiza solo al confirmar una orden.
 
-📌 Reglas del Negocio
-El stock del producto debe disminuir al momento de confirmar una orden.
+El precio aplicado a cada producto en una orden se congela en el momento de la compra.
 
-Cada orden debe tener al menos un producto asociado.
+El estado del envío sigue un flujo lógico: Pendiente → En preparación → En camino → Entregado / Cancelado.
 
-Los precios aplicados en una orden se congelan al momento de compra.
-
-Los estados del envío pueden ser: Pendiente, En preparación, En camino, Entregado, Cancelado.
-
-Los canales de venta deben poder analizarse por separado para medir rentabilidad.
+Cada orden debe tener al menos un producto.
 
 🔍 Consultas Representativas
 ¿Cuáles fueron los productos más vendidos en el último trimestre?
 
-¿Cuál fue el canal con mayor facturación el mes pasado?
+¿Qué canal de venta generó mayor facturación el mes pasado?
 
-¿Cuántas órdenes fueron entregadas en los últimos 7 días?
+¿Qué clientes realizaron más de 3 compras en el año?
 
-¿Qué clientes realizaron más de 3 compras?
+¿Qué órdenes están aún pendientes de envío?
 
-¿Qué productos tienen stock menor a 10 unidades?
+¿Qué productos tienen stock menor a 10 unidades disponibles?
 
-¿Cuál es el ticket promedio por canal de venta?
-
-
+¿Cuál es el ticket promedio por canal?
 
 
-# 📊 Caso Inteligencia de Negocios – Solución de Inteligencia de Negocios para ComercioFácil S.A.
+
+# 📊 Caso de Inteligencia de Negocios – ComercioFácil S.A.
 🧭 Contexto del Negocio
-ComercioFácil S.A. ha implementado un sistema transaccional que registra todas las operaciones de compra de sus clientes, incluyendo productos, pagos, envíos y stock. Sin embargo, la dirección comercial necesita ahora una solución de inteligencia de negocios que transforme esos datos operativos en decisiones estratégicas.
+ComercioFácil S.A. es una empresa de e-commerce en expansión que gestiona ventas de productos tecnológicos, hogar y electrónica a través de múltiples canales: su sitio web propio, WhatsApp Business y marketplaces como Mercado Libre.
 
-Los objetivos del área de BI serán:
+Con el crecimiento del negocio, la dirección general y el área comercial han identificado la necesidad de ir más allá de los reportes operativos básicos que brinda su sistema transaccional. Buscan implementar una solución de Inteligencia de Negocios (BI) que les permita transformar sus datos en decisiones estratégicas y accionables, enfocadas en:
 
-Monitorear la performance del negocio en tiempo real.
+Rentabilidad de productos y canales.
 
-Detectar oportunidades de crecimiento y mejora en canales, productos y clientes.
+Comportamiento de clientes.
 
-Medir indicadores de eficiencia operativa y rentabilidad.
+Eficiencia logística y de atención.
 
-Automatizar reportes ejecutivos y facilitar el análisis multidimensional.
+Planeamiento de compras y stock.
 
-🎯 Objetivo de la Solución BI
-Diseñar una solución de Business Intelligence que:
+🎯 Objetivo General de la Solución BI
+Diseñar e implementar una solución de Business Intelligence que permita a los equipos comerciales, logísticos y ejecutivos:
 
-Consuma los datos transaccionales del sistema de ventas.
+Monitorear en tiempo real los indicadores clave del negocio.
 
-Modele un esquema de datos analítico (estrella o copo de nieve).
+Analizar patrones y comportamientos de compra por cliente, canal y categoría.
 
-Permita explorar las métricas clave del negocio.
+Medir la rentabilidad por producto, familia y canal de venta.
 
-Implemente dashboards con filtros por canal, tiempo, categoría y cliente.
+Detectar cuellos de botella logísticos y optimizar tiempos de entrega.
 
-Automatice la generación de reportes operativos y comerciales.
+Predecir demanda futura mediante tendencias históricas.
 
-📐 Modelo BI (Diseño Semántico)
-🔷 Hecho principal: FactVentas
-Contendrá una fila por producto vendido por orden. Campos:
+Automatizar reportes periódicos para cada unidad de negocio.
 
-IdOrden
+Tomar decisiones basadas en datos, no en intuición.
 
-IdProducto
+📐 Diseño de Modelo de Datos BI (Esquema Estrella)
+El modelo de BI se construirá a partir del sistema transaccional ya modelado, mediante un proceso de ETL (extracción, transformación y carga) hacia un modelo dimensional optimizado para análisis.
 
-FechaVenta
+🔷 Tabla de Hechos: FactVentas
+Cada fila representa un producto vendido en una orden de compra.
 
-CanalVenta
-
-MetodoPago
-
-Cantidad
-
-PrecioUnitario
-
-Descuento
-
-TotalVenta
-
-CostoUnitario
-
-MargenBruto
+Campo	Tipo	Descripción
+IdVenta	Clave	ID único por fila de venta.
+IdOrden	FK	Identificador de la orden de compra.
+IdProducto	FK	Producto vendido.
+IdCliente	FK	Cliente que realizó la compra.
+IdCanalVenta	FK	Canal a través del cual se originó la orden.
+IdMetodoPago	FK	Medio de pago utilizado.
+IdFechaVenta	FK	Fecha de la transacción.
+IdEstadoEnvio	FK	Estado del envío asociado.
+Cantidad	Numérico	Unidades vendidas.
+PrecioUnitario	Monetario	Precio aplicado por unidad en esa orden.
+TotalVenta	Monetario	PrecioUnitario * Cantidad.
+CostoUnitario	Monetario	Costo estimado del producto.
+MargenBruto	Monetario	TotalVenta - (CostoUnitario * Cantidad).
+DescuentoAplicado	Monetario	Monto total de descuento aplicado.
 
 🔶 Dimensiones
-Dimensión	Contenido
-DimFecha	Año, mes, día, trimestre, día de semana.
-DimProducto	Categoría, nombre, proveedor.
-DimCliente	Zona, tipo de cliente, antigüedad.
-DimCanalVenta	Web, WhatsApp, Marketplace, etc.
-DimMetodoPago	Tarjeta, transferencia, efectivo.
-DimEstadoEnvio	Pendiente, En camino, Entregado, etc.
+DimFecha
+Campo	Ejemplo
+IdFechaVenta	20230715
+Año	2023
+Trimestre	Q3
+Mes	Julio
+Día	15
+DíaSemana	Sábado
 
-📌 Indicadores Clave a Implementar
-Comerciales
-Ventas totales
+DimProducto
+Campo	Ejemplo
+IdProducto	P1023
+Nombre	Auriculares Bluetooth
+Categoría	Audio
+Subcategoría	Accesorios
+Proveedor	Logitech
+Estado	Activo / Discontinuado
 
-Ventas por canal y categoría
+DimCliente
+Campo	Ejemplo
+IdCliente	C001122
+Nombre	Juan Pérez
+Zona	Córdoba
+TipoCliente	Particular / Empresa
+Antigüedad	3 años
 
-Ticket promedio
+DimCanalVenta
+Campo	Ejemplo
+IdCanalVenta	CV01
+Canal	WhatsApp
+Origen	Directo / Tercero
 
-Clientes recurrentes vs nuevos
+DimMetodoPago
+Campo	Ejemplo
+IdMetodoPago	MP03
+MedioPago	Transferencia
 
-Logísticos
-Tiempos promedio de entrega
+DimEstadoEnvio
+Campo	Ejemplo
+IdEstadoEnvio	EE01
+Estado	En camino
 
-Órdenes sin entregar
+📊 Métricas Clave por Área
+1. Área Comercial
+Ventas totales por canal, período y producto.
 
-Porcentaje de entregas en tiempo
+Ranking de productos más vendidos y menos vendidos.
 
-Rentabilidad
-Margen bruto por producto y canal
+Ticket promedio por canal y por cliente.
 
-Ranking de productos más y menos rentables
+Comparación de rendimiento entre canales.
 
-Análisis ABC (productos clave en facturación)
+Análisis de evolución mensual de ventas.
 
-Clientes
-Top 10 clientes por volumen
+2. Área Logística
+Porcentaje de órdenes entregadas en tiempo.
 
-Tasa de recompra
+Tiempos promedio de entrega por zona.
 
-Segmentación por comportamiento de compra
+Órdenes con estado pendiente o en tránsito.
 
-🧠 Justificación de la Solución BI
-Aspecto	Valor Agregado
-Orientación Estratégica	Permite decisiones basadas en datos reales, no intuición.
-Escalabilidad	Se puede ampliar a campañas, marketing, devoluciones.
-Visualización Ejecutiva	Presenta indicadores de forma clara, accesible y dinámica.
-Automatización	Ahorra tiempo en reportes mensuales o semanales.
-Proyección	Permite escenarios tipo “¿Qué pasaría si...?” sobre ventas y precios.
+Distribución de órdenes por transportista.
 
+3. Rentabilidad
+Margen bruto por producto, categoría y canal.
 
+Costo promedio ponderado por categoría.
+
+Análisis ABC de productos (facturación acumulada).
+
+Rentabilidad por cliente (Customer Lifetime Value).
+
+4. Clientes
+Clientes más fieles (cantidad y frecuencia de compras).
+
+Clientes nuevos vs recurrentes por mes.
+
+Segmentación por comportamiento de compra.
+
+Tasa de recompra (retención mensual).
+
+📊 Dashboards Recomendados
+Dashboard Ejecutivo General
+
+Ventas totales, margen total, comparativo con mes anterior.
+
+Mapa de calor por zona geográfica.
+
+Alertas de productos con stock crítico.
+
+Dashboard Comercial
+
+Ranking productos/canales.
+
+Evolución mensual de ventas.
+
+Comparativa entre marketplaces.
+
+Dashboard de Logística
+
+Tiempos de entrega promedio.
+
+Órdenes pendientes por zona.
+
+Análisis de performance de operadores logísticos.
+
+Dashboard de Clientes
+
+Funnel de conversión.
+
+Segmentación por valor.
+
+Retención y tasa de recompra.
+
+🔁 Automatización de Reportes
+Reportes semanales automáticos de ventas y rentabilidad.
+
+Alertas por mail para:
+
+productos sin stock,
+
+caída de ventas,
+
+baja conversión por canal.
+
+Exportación mensual a Excel/SharePoint de métricas clave.
+
+🧠 Justificación Estratégica
+Elemento	Beneficio Real
+Análisis Multidimensional	Permite cortar los datos por canal, fecha, zona, cliente.
+Visualización Ejecutiva	Facilita la toma de decisiones por parte de gerencias no técnicas.
+Automatización	Ahorra tiempo de generación manual de reportes.
+Escalabilidad	Modelo preparado para incorporar campañas, devoluciones, etc.
+Toma de Decisiones	Se basa en datos reales, no en percepción o intuición.
+Potencial Predictivo	Base para construir modelos de forecasting o machine learning.
